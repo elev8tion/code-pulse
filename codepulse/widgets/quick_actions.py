@@ -79,7 +79,6 @@ class ActionCard(Widget):
     ActionCard:hover {
         background: #1a1a2e;
         border: solid $accent;
-        cursor: pointer;
     }
     ActionCard.--fired {
         background: #1a2a1a;

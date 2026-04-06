@@ -43,7 +43,6 @@ class ToolCard(Widget):
     ToolCard:hover {
         border: solid $primary;
         background: #1a1a2e;
-        cursor: pointer;
     }
     ToolCard.--glow {
         background: #0d2a1a;
