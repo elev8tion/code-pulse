@@ -11,6 +11,7 @@ app = typer.Typer(
     name="codepulse",
     help="Claude Code TUI with codebase visualization and rotating subagents.",
     add_completion=False,
+    invoke_without_command=True,
 )
 
 
@@ -26,6 +27,23 @@ def _launch(project_path: str, project_name: str, resume: bool = False) -> None:
         resume=resume,
     )
     tui.run()
+
+
+@app.callback()
+def default(ctx: typer.Context) -> None:
+    """Run with no subcommand to open the project launcher."""
+    if ctx.invoked_subcommand is None:
+        _run_launcher()
+
+
+def _run_launcher() -> None:
+    from codepulse.widgets.launcher import LauncherApp
+    launcher = LauncherApp()
+    result = launcher.run()
+    if result is None:
+        raise typer.Exit(0)
+    path, name, resume = result
+    _launch(path, name, resume)
 
 
 @app.command(name="open")

@@ -20,6 +20,9 @@ PROJECTS_DIR = CODEPULSE_HOME / "projects"
 # Quick Actions customization file
 ACTIONS_FILE = CODEPULSE_HOME / "actions.json"
 
+# Where GitHub repos are cloned to
+CLONES_DIR = Path.home() / "codepulse-projects"
+
 # Process Manager
 MAX_PROCESS_OUTPUT_LINES = 200
 PROCESS_STOP_TIMEOUT_SECS = 3.0
