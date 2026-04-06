@@ -1,0 +1,244 @@
+/* CodePulse — Textual CSS */
+
+Screen {
+    layout: vertical;
+    background: #0d0d1a;
+}
+
+/* ── Main Layout ─────────────────────────────────────────────────────────── */
+
+#main-layout {
+    layout: horizontal;
+    height: 1fr;
+}
+
+#left-column {
+    width: 60%;
+    height: 100%;
+}
+
+#right-column {
+    width: 40%;
+    height: 100%;
+    layout: vertical;
+}
+
+#heatmap-panel {
+    height: 60%;
+}
+
+#diff-panel {
+    height: 40%;
+}
+
+/* ── Chat & Input ────────────────────────────────────────────────────────── */
+
+ChatPanel {
+    layout: vertical;
+    height: 100%;
+    border: solid $primary-darken-2;
+}
+
+ChatPanel > RichLog {
+    height: 1fr;
+    padding: 0 1;
+    background: #0d0d1a;
+}
+
+PromptInput {
+    height: 3;
+    border-top: solid $surface;
+    padding: 0 1;
+}
+
+PromptInput Input {
+    border: none;
+    height: 1;
+    margin-top: 1;
+    background: transparent;
+}
+
+/* ── Diff & Heatmap ─────────────────────────────────────────────────────── */
+
+.diff-turn-header {
+    height: 1;
+    color: $text-muted;
+    padding: 0 1;
+    margin-top: 1;
+}
+
+Tree {
+    scrollbar-background: $surface;
+    scrollbar-color: $accent-darken-2;
+}
+
+Input {
+    background: #1a1a2e;
+    border: none;
+    color: $text;
+}
+
+Input:focus {
+    border: none;
+    background: #1a1a33;
+}
+
+RichLog {
+    scrollbar-background: $surface;
+    scrollbar-color: $primary-darken-2;
+    background: #0d0d1a;
+}
+
+/* ── Bottom Drawer ───────────────────────────────────────────────────────── */
+
+BottomDrawer {
+    height: 10;
+    border-top: solid $primary-darken-2;
+    background: #090912;
+    transition: height 200ms in_out_cubic;
+}
+
+BottomDrawer.--collapsed {
+    height: 2;
+}
+
+BottomDrawer TabbedContent {
+    height: 100%;
+    background: transparent;
+}
+
+BottomDrawer TabbedContent > TabPane {
+    height: 1fr;
+    padding: 0;
+    background: transparent;
+}
+
+/* ── Tool Palette ────────────────────────────────────────────────────────── */
+
+ToolPalette {
+    height: 100%;
+    layout: vertical;
+    background: transparent;
+}
+
+ToolPalette > #tool-row {
+    height: 1fr;
+    layout: horizontal;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0 1;
+    align: left middle;
+}
+
+ToolCard {
+    width: 11;
+    height: 6;
+    border: solid $surface;
+    background: #0d0d1a;
+    content-align: center middle;
+    text-align: center;
+    padding: 0 1;
+    margin: 0 1;
+    transition: background 150ms linear, border 150ms linear;
+}
+
+ToolCard:hover {
+    border: solid $primary;
+    background: #1a1a2e;
+}
+
+ToolCard.--glow {
+    background: #0d2a1a;
+    border: solid #00ff41;
+}
+
+/* ── Process Manager ─────────────────────────────────────────────────────── */
+
+ProcessManager {
+    height: 100%;
+    layout: vertical;
+    background: transparent;
+    padding: 0 1;
+}
+
+ProcessManager > #proc-list {
+    height: 1fr;
+    layout: vertical;
+    overflow-y: auto;
+}
+
+ProcessCard {
+    height: 5;
+    border: solid $surface;
+    padding: 0 1;
+    margin: 0 0 0 0;
+    layout: vertical;
+    transition: border 200ms linear, height 200ms in_out_cubic;
+}
+
+ProcessCard.--running { border: solid #00cc44; }
+ProcessCard.--error   { border: solid #ff4444; }
+ProcessCard.--expanded { height: 14; }
+
+ProcessCard > #proc-header {
+    layout: horizontal;
+    height: 3;
+    align: left middle;
+}
+
+ProcessCard > #proc-header > #proc-dot  { width: 3; height: 1; }
+ProcessCard > #proc-header > #proc-name { width: 1fr; height: 1; color: $text; }
+ProcessCard > #proc-header > #proc-btn  { width: 8; height: 3; }
+
+ProcessCard > #last-line-bar {
+    height: 1;
+    color: $text-muted;
+    overflow: hidden;
+}
+
+ProcessCard > #proc-output {
+    display: none;
+    height: 1fr;
+    border-top: solid $surface;
+}
+
+ProcessCard.--expanded > #proc-output { display: block; }
+
+/* ── Quick Action Deck ───────────────────────────────────────────────────── */
+
+QuickActionDeck {
+    height: 100%;
+    layout: vertical;
+    background: transparent;
+}
+
+QuickActionDeck > #actions-row {
+    height: 1fr;
+    layout: horizontal;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0 1;
+    align: left middle;
+}
+
+ActionCard {
+    width: 14;
+    height: 6;
+    border: solid $primary-darken-2;
+    background: #0d0d1a;
+    content-align: center middle;
+    text-align: center;
+    padding: 0 1;
+    margin: 0 1;
+    transition: background 120ms linear, border 120ms linear;
+}
+
+ActionCard:hover {
+    border: solid $accent;
+    background: #1a1a2e;
+}
+
+ActionCard.--fired {
+    background: #1a2a1a;
+    border: solid #00ff41;
+}
