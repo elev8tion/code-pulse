@@ -2,8 +2,12 @@
 from __future__ import annotations
 
 import asyncio
+import atexit
+import os
 from pathlib import Path
 from typing import Optional
+
+_PID_FILE = Path.home() / ".codepulse" / "running.pid"
 
 from textual.app import App, ComposeResult
 from textual.binding import Binding
@@ -145,6 +149,11 @@ class CodePulseApp(App):
     # ── Lifecycle ────────────────────────────────────────────────────────────
 
     async def on_mount(self) -> None:
+        # Let menu bar app know we're live
+        _PID_FILE.parent.mkdir(parents=True, exist_ok=True)
+        _PID_FILE.write_text(str(os.getpid()))
+        atexit.register(lambda: _PID_FILE.unlink(missing_ok=True))
+
         write_default_actions()
         await self._initialize()
 
