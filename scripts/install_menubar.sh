@@ -50,7 +50,7 @@ cat > "$PLIST" << PLIST_EOF
     <true/>
 
     <key>KeepAlive</key>
-    <true/>
+    <false/>
 
     <key>StandardOutPath</key>
     <string>${LOG_DIR}/menubar.log</string>
