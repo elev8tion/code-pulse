@@ -1,0 +1,134 @@
+.orchestration-panel {
+  height: 100%;
+}
+
+.orchestration-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 10px;
+}
+
+/* Agent slots */
+.agent-row {
+  display: flex;
+  gap: 8px;
+}
+
+.agent-slot {
+  flex: 1;
+  padding: 10px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border-dim);
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.3s ease;
+  text-align: center;
+  min-width: 0;
+}
+
+.agent-slot-number {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.06em;
+}
+
+.agent-state {
+  font-size: 9px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+.agent-synopsis {
+  font-size: 9px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  line-height: 1.4;
+  text-align: left;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* State variants */
+.agent--current {
+  border-color: rgba(0, 170, 255, 0.4);
+  background: rgba(0, 170, 255, 0.06);
+}
+
+.agent--current .agent-slot-number {
+  color: var(--pulse-blue);
+}
+
+.agent--processing {
+  border-color: rgba(0, 255, 136, 0.4);
+  background: rgba(0, 255, 136, 0.06);
+  animation: toolGlow 1s ease-in-out infinite;
+}
+
+.agent--processing .agent-state {
+  color: var(--pulse-green);
+}
+
+.agent--discussing {
+  border-color: rgba(204, 68, 255, 0.4);
+  background: rgba(204, 68, 255, 0.06);
+}
+
+.agent--discussing .agent-state {
+  color: var(--pulse-purple);
+}
+
+/* Handoff timeline */
+.handoff-timeline {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.timeline-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.handoff-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.handoff-entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-dim);
+}
+
+.handoff-arrow {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--pulse-amber);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.handoff-synopsis {
+  font-size: 10px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

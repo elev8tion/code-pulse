@@ -1,0 +1,125 @@
+.nextsteps-panel {
+  height: 100%;
+}
+
+.nextsteps-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 10px;
+  height: 100%;
+}
+
+.nextsteps-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nextsteps-section-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nextsteps-main {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Status grid */
+.status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.status-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+}
+
+.status-label {
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.status-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status-streaming {
+  color: var(--pulse-blue);
+}
+
+.status-ready {
+  color: var(--pulse-green);
+}
+
+/* Steps */
+.nextsteps-empty {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.steps-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-dim);
+  transition: all 0.15s ease;
+}
+
+.step-item--primary {
+  background: rgba(0, 255, 136, 0.05);
+  border-color: rgba(0, 255, 136, 0.2);
+}
+
+.step-item--primary .step-bullet {
+  color: var(--pulse-green);
+}
+
+.step-bullet {
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.step-text {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Actions */
+.nextsteps-actions {
+  flex-shrink: 0;
+}

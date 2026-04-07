@@ -1,7 +1,8 @@
 """CodePulse CLI — typer entry points."""
 from __future__ import annotations
 
-import sys
+import os
+import webbrowser
 from pathlib import Path
 from typing import Optional
 
@@ -9,72 +10,94 @@ import typer
 
 app = typer.Typer(
     name="codepulse",
-    help="Claude Code TUI with codebase visualization and rotating subagents.",
+    help="Local web-based visual studio for solo agentic programming with Claude Code.",
     add_completion=False,
     invoke_without_command=True,
 )
+
+DEFAULT_HOST = "127.0.0.1"
+DEFAULT_PORT = 3000
 
 
 def _project_name_from_path(path: Path) -> str:
     return path.resolve().name or "project"
 
 
-def _launch(project_path: str, project_name: str, resume: bool = False) -> None:
-    from codepulse.app import CodePulseApp
-    tui = CodePulseApp(
-        project_path=project_path,
-        project_name=project_name,
-        resume=resume,
-    )
-    tui.run()
+def _launch_server(
+    project_path: str,
+    project_name: str,
+    resume: bool = False,
+    host: str = DEFAULT_HOST,
+    port: int = DEFAULT_PORT,
+) -> None:
+    """Start the FastAPI server and open the browser."""
+    # Set env vars before uvicorn imports/runs the server module
+    os.environ["CODEPULSE_PROJECT_PATH"] = project_path
+    os.environ["CODEPULSE_PROJECT_NAME"] = project_name
+    os.environ["CODEPULSE_RESUME"] = "1" if resume else "0"
+
+    url = f"http://{host}:{port}"
+    typer.echo(f"🚀  Starting Code-Pulse for project '{project_name}'")
+    typer.echo(f"    Path:    {project_path}")
+    typer.echo(f"    Server:  {url}")
+    typer.echo("    Press Ctrl+C to stop.\n")
+
+    import threading
+    import time
+
+    def _open_browser() -> None:
+        time.sleep(1.5)
+        webbrowser.open(url)
+
+    threading.Thread(target=_open_browser, daemon=True).start()
+
+    try:
+        import uvicorn
+        uvicorn.run(
+            "codepulse.server:app",
+            host=host,
+            port=port,
+            log_level="warning",
+        )
+    except ImportError:
+        typer.echo("Error: uvicorn not installed. Run: pip install codepulse", err=True)
+        raise typer.Exit(1)
 
 
 @app.callback()
-def default(ctx: typer.Context) -> None:
-    """Run with no subcommand to open the project launcher."""
+def default(
+    ctx: typer.Context,
+    host: str = typer.Option(DEFAULT_HOST, "--host", help="Server host"),
+    port: int = typer.Option(DEFAULT_PORT, "--port", "-p", help="Server port"),
+) -> None:
+    """Launch Code-Pulse for the current directory and open the browser."""
     if ctx.invoked_subcommand is None:
-        _run_launcher()
-
-
-def _run_launcher() -> None:
-    from codepulse.widgets.launcher import LauncherApp
-    launcher = LauncherApp()
-    result = launcher.run()
-    if result is None:
-        raise typer.Exit(0)
-    path, name, resume = result
-    _launch(path, name, resume)
+        project_path = str(Path.cwd())
+        project_name = _project_name_from_path(Path(project_path))
+        _launch_server(project_path, project_name, resume=False, host=host, port=port)
 
 
 @app.command(name="open")
 def cmd_open(
     path: str = typer.Argument(..., help="Path to project folder to open"),
     name: Optional[str] = typer.Option(None, "--name", "-n", help="Override project name"),
+    host: str = typer.Option(DEFAULT_HOST, "--host", help="Server host"),
+    port: int = typer.Option(DEFAULT_PORT, "--port", "-p", help="Server port"),
 ) -> None:
-    """Open an existing project folder."""
+    """Open an existing project folder in Code-Pulse."""
     p = Path(path)
     if not p.exists():
         typer.echo(f"Error: path does not exist: {path}", err=True)
         raise typer.Exit(1)
     project_name = name or _project_name_from_path(p)
-    _launch(str(p), project_name, resume=False)
-
-
-@app.command(name="new")
-def cmd_new(
-    name: str = typer.Argument(..., help="Project name"),
-    path: Optional[str] = typer.Option(None, "--path", "-p", help="Project path (default: current dir)"),
-) -> None:
-    """Start a new blank project session."""
-    project_path = Path(path) if path else Path.cwd()
-    if not project_path.exists():
-        project_path.mkdir(parents=True)
-    _launch(str(project_path), name, resume=False)
+    _launch_server(str(p.resolve()), project_name, resume=False, host=host, port=port)
 
 
 @app.command(name="resume")
 def cmd_resume(
     project: str = typer.Argument(..., help="Project name to resume"),
+    host: str = typer.Option(DEFAULT_HOST, "--host", help="Server host"),
+    port: int = typer.Option(DEFAULT_PORT, "--port", "-p", help="Server port"),
 ) -> None:
     """Resume the latest session for a project."""
     from codepulse.session.manager import SessionManager
@@ -82,7 +105,7 @@ def cmd_resume(
     if session is None:
         typer.echo(f"No session found for project: {project}", err=True)
         raise typer.Exit(1)
-    _launch(session.project_path, project, resume=True)
+    _launch_server(session.project_path, project, resume=True, host=host, port=port)
 
 
 @app.command(name="list")

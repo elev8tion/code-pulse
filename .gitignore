@@ -38,3 +38,7 @@ htmlcov/
 # Secrets (just in case)
 *.env
 .env
+
+# Frontend build artifacts
+frontend/node_modules/
+frontend/dist/
