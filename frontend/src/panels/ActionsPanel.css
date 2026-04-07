@@ -1,0 +1,124 @@
+.actions-panel {
+  height: 100%;
+}
+
+.actions-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  position: relative;
+}
+
+/* Sub-prompt */
+.sub-prompt-overlay {
+  position: absolute;
+  inset: 8px;
+  z-index: 10;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-accent);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 0 20px rgba(0, 170, 255, 0.2);
+}
+
+.sub-prompt-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.sub-prompt-input {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
+/* Action grid */
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.action-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 6px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-dim);
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.action-card:hover:not(.action-card--disabled) {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: color-mix(in srgb, var(--action-color, #cccccc) 40%, transparent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--action-color, #cccccc) 20%, transparent);
+}
+
+.action-card--fired {
+  background: rgba(0, 255, 136, 0.1);
+  border-color: rgba(0, 255, 136, 0.5);
+  animation: toolGlow 0.6s ease;
+}
+
+.action-card--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.action-icon {
+  font-size: 16px;
+  color: var(--action-color, #cccccc);
+  filter: brightness(0.9);
+}
+
+.action-label {
+  font-size: 9px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+/* Process section */
+.process-section {
+  border-top: 1px solid var(--border-dim);
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.process-section-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.process-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.process-name {
+  flex: 1;
+  font-size: 11px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -1,0 +1,54 @@
+.arsenal-panel {
+  height: 100%;
+}
+
+.arsenal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 10px;
+}
+
+.tool-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px 4px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-dim);
+  cursor: default;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.tool-icon {
+  font-size: 16px;
+  line-height: 1;
+  filter: grayscale(0.6) brightness(0.7);
+  transition: filter 0.2s ease;
+}
+
+.tool-name {
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  transition: color 0.2s ease;
+}
+
+/* Active state — tool is being used */
+.tool-card--active {
+  background: rgba(0, 255, 136, 0.08);
+  border-color: rgba(0, 255, 136, 0.4);
+  animation: toolGlow 0.8s ease-in-out infinite;
+}
+
+.tool-card--active .tool-icon {
+  filter: grayscale(0) brightness(1.2);
+}
+
+.tool-card--active .tool-name {
+  color: var(--pulse-green);
+}
