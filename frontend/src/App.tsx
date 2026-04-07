@@ -45,6 +45,7 @@ export default function App() {
   // Chat state
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const streamingRef = useRef('')
+  const currentUserMsgRef = useRef('')  // tracks the user's message for the current turn
 
   // Tool clear timer
   const toolClearRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -81,6 +82,7 @@ export default function App() {
       case 'stream_start': {
         setIsStreaming(true)
         streamingRef.current = ''
+        currentUserMsgRef.current = msg.user_message
         setMessages(prev => [
           ...prev,
           { role: 'user', content: msg.user_message },
@@ -127,11 +129,10 @@ export default function App() {
         })
         // Update recent turns
         setRecentTurns(prev => {
-          const last = prev[prev.length - 1]
           return [...prev, {
             turn_index: msg.turn_index,
             timestamp: new Date().toISOString(),
-            user_message: streamingRef.current.slice(0, 200),
+            user_message: currentUserMsgRef.current.slice(0, 200),
             assistant_message: streamingRef.current.slice(0, 500),
             synopsis: msg.synopsis,
             agent_slot: msg.agent_slot,

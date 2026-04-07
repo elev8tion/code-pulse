@@ -23,10 +23,8 @@ def client(tmp_path, monkeypatch):
     from httpx import AsyncClient, ASGITransport
     import asyncio
 
-    # Initialize state
-    loop = asyncio.new_event_loop()
-    loop.run_until_complete(server_mod.state.initialize())
-    loop.close()
+    # Initialize state synchronously before tests run
+    asyncio.run(server_mod.state.initialize())
 
     return AsyncClient(
         transport=ASGITransport(app=server_mod.app),
@@ -150,3 +148,59 @@ async def test_list_projects(client):
         response = await c.get("/api/projects")
         assert response.status_code == 200
         assert isinstance(response.json(), list)
+
+
+@pytest.mark.asyncio
+async def test_initialize_creates_session(tmp_path, monkeypatch):
+    """Verify initialize() creates a valid session and configures the agent pool."""
+    import asyncio
+    import importlib
+
+    monkeypatch.setenv("CODEPULSE_PROJECT_PATH", str(tmp_path))
+    monkeypatch.setenv("CODEPULSE_PROJECT_NAME", "init-test-project")
+    monkeypatch.setenv("CODEPULSE_RESUME", "0")
+    monkeypatch.setattr("codepulse.config.PROJECTS_DIR", tmp_path / "projects")
+
+    import codepulse.utils.paths as paths_mod
+    monkeypatch.setattr(paths_mod, "PROJECTS_DIR", tmp_path / "projects")
+
+    import codepulse.server as server_mod
+    importlib.reload(server_mod)
+
+    await server_mod.state.initialize(resume=False)
+
+    assert server_mod.state.session is not None
+    assert server_mod.state.session.project_name == "init-test-project"
+    assert server_mod.state.session.turn_count == 0
+    assert server_mod.state.agent_pool.current_slot == 0
+    assert server_mod.state.agent_pool.size == 3
+
+
+@pytest.mark.asyncio
+async def test_initialize_resume_restores_state(tmp_path, monkeypatch):
+    """Verify initialize(resume=True) restores agent slot from the saved session."""
+    import importlib
+    from codepulse.session.manager import SessionManager
+    from codepulse.utils.time_utils import today_str
+
+    monkeypatch.setattr("codepulse.config.PROJECTS_DIR", tmp_path / "projects")
+    import codepulse.utils.paths as paths_mod
+    monkeypatch.setattr(paths_mod, "PROJECTS_DIR", tmp_path / "projects")
+
+    # Create and save a session with a non-zero agent slot
+    mgr = SessionManager("resume-test", tmp_path)
+    session = mgr.load_or_create()
+    session.current_agent_slot = 2
+    mgr.save(session)
+
+    monkeypatch.setenv("CODEPULSE_PROJECT_PATH", str(tmp_path))
+    monkeypatch.setenv("CODEPULSE_PROJECT_NAME", "resume-test")
+    monkeypatch.setenv("CODEPULSE_RESUME", "1")
+
+    import codepulse.server as server_mod
+    importlib.reload(server_mod)
+
+    await server_mod.state.initialize(resume=True)
+
+    assert server_mod.state.session is not None
+    assert server_mod.state.agent_pool.current_slot == 2

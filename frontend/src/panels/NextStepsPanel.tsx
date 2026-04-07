@@ -11,9 +11,12 @@ interface Props {
 
 function extractNextSteps(synopsis: string): string[] {
   if (!synopsis) return []
+  // Try to extract bullet-point lines first (•, -, *)
   const lines = synopsis.split('\n').filter(l => l.trim().startsWith('•') || l.trim().startsWith('-') || l.trim().startsWith('*'))
-  if (lines.length > 0) return lines.map(l => l.replace(/^[•\-*]\s*/, '').trim()).slice(0, 5)
-  // Fallback: split into sentences
+  if (lines.length > 0) {
+    return lines.map(l => l.replace(/^[•\-*]\s*/, '').trim()).slice(0, 5)
+  }
+  // Fallback: split on sentence boundaries and take first 3 non-trivial sentences
   return synopsis.split(/[.!?]/).filter(s => s.trim().length > 10).slice(0, 3).map(s => s.trim())
 }
 

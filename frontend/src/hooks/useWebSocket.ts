@@ -36,8 +36,9 @@ export function useWebSocket(
         if (msg.type !== 'ping') {
           onMessageRef.current(msg)
         }
-      } catch {
-        // ignore malformed messages
+      } catch (err) {
+        // Log malformed WebSocket messages to aid debugging in development
+        console.warn('[CodePulse] Failed to parse WebSocket message:', err)
       }
     }
 
