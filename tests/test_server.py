@@ -152,8 +152,7 @@ async def test_list_projects(client):
 
 @pytest.mark.asyncio
 async def test_initialize_creates_session(tmp_path, monkeypatch):
-    """Verify initialize() creates a valid session and configures the agent pool."""
-    import asyncio
+    """Verify initialize(resume=False) creates a fresh session, not loaded from disk."""
     import importlib
 
     monkeypatch.setenv("CODEPULSE_PROJECT_PATH", str(tmp_path))
@@ -169,11 +168,15 @@ async def test_initialize_creates_session(tmp_path, monkeypatch):
 
     await server_mod.state.initialize(resume=False)
 
+    # Session should be freshly created with no existing turns
     assert server_mod.state.session is not None
     assert server_mod.state.session.project_name == "init-test-project"
     assert server_mod.state.session.turn_count == 0
+    # Agent pool should start at slot 0 (default, not restored)
     assert server_mod.state.agent_pool.current_slot == 0
     assert server_mod.state.agent_pool.size == 3
+    # No claude session ID for a brand-new project
+    assert server_mod.state.session.claude_session_id is None
 
 
 @pytest.mark.asyncio

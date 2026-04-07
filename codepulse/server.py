@@ -506,11 +506,11 @@ async def export_session() -> JSONResponse:
     if not state.session:
         return JSONResponse({"error": "No session"}, status_code=404)
     from datetime import datetime
-    out_path = Path.cwd() / f"codepulse-{state.project_name}-{state.session.session_date}.md"
+    export_path = Path.cwd() / f"codepulse-{state.project_name}-{state.session.session_date}.md"
     pd = project_dir(state.project_name)
     exporter = MarkdownExporter(state.session, pd)
-    exporter.export(out_path)
-    return JSONResponse({"path": str(out_path)})
+    exporter.export(export_path)
+    return JSONResponse({"path": str(export_path)})
 
 
 # -- Actions ------------------------------------------------------------------
@@ -652,7 +652,7 @@ def _handoffs_payload() -> list[dict]:
 
 # ── Static file serving ───────────────────────────────────────────────────────
 
-_FRONTEND_DIST = Path(__file__).parent.parent / "frontend" / "dist"
+FRONTEND_DIST_DIR = Path(__file__).parent.parent / "frontend" / "dist"
 
 
 @app.get("/health")
@@ -661,13 +661,13 @@ async def health() -> JSONResponse:
 
 
 def _setup_static_files() -> None:
-    if _FRONTEND_DIST.exists():
-        app.mount("/assets", StaticFiles(directory=str(_FRONTEND_DIST / "assets")), name="assets")
+    if FRONTEND_DIST_DIR.exists():
+        app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIST_DIR / "assets")), name="assets")
 
         @app.get("/{full_path:path}")
         async def serve_spa(full_path: str) -> FileResponse:
-            # API routes are already handled above
-            index = _FRONTEND_DIST / "index.html"
+            # API routes are already handled above; all other paths serve the SPA
+            index = FRONTEND_DIST_DIR / "index.html"
             return FileResponse(str(index))
 
 
